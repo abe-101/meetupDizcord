@@ -157,3 +157,43 @@ async def get_warnings(user_id: int, server_id: int) -> list:
             for row in result:
                 result_list.append(row)
             return result_list
+
+async def save_meetup_token(server_id: int, access_token: str, expires_in: int, refresh_token: str, token_type: str) -> int:
+    """
+    This function will add a meetup.com authentication token to the database.
+
+    :param server_id: The ID of the server where the token is associated.
+    :param access_token: The access token for meetup.com.
+    :param expires_in: The expiration time in seconds for the access token.
+    :param refresh_token: The refresh token for meetup.com.
+    :param token_type: The type of the token (e.g., "bearer").
+    :return: The ID of the inserted token.
+    """
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute(
+            "INSERT INTO meetup_tokens(server_id, access_token, expires_in, refresh_token, token_type) VALUES (?, ?, ?, ?, ?)",
+            (server_id, access_token, expires_in, refresh_token, token_type),
+        )
+        await db.commit()
+        rows = await db.execute("SELECT last_insert_rowid()")
+        async with rows as cursor:
+            result = await cursor.fetchone()
+            return result[0] if result is not None else 0
+
+async def update_meetup_token(server_id: int, access_token: str, expires_in: int, refresh_token: str) -> None:
+    """
+    This function updates the meetup.com authentication token for a specific server.
+
+    :param server_id: The ID of the server associated with the token.
+    :param access_token: The updated access token.
+    :param expires_in: The updated expiration time in seconds for the access token.
+    :param refresh_token: The updated refresh token.
+    """
+    async with aiosqlite.connect(DATABASE_PATH) as db:
+        await db.execute(
+            "UPDATE meetup_tokens SET access_token=?, expires_in=?, refresh_token=? WHERE server_id=?",
+            (access_token, expires_in, refresh_token, server_id),
+        )
+        await db.commit()
+
+
