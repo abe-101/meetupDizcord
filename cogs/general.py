@@ -138,8 +138,8 @@ class General(commands.Cog, name="general"):
         )
         try:
             # To know what permissions to give to your bot, please see here: https://discordapi.com/permissions.html and remember to not give Administrator permissions.
-            await context.author.send(embed=embed)
             await context.send("I sent you a private message!")
+            await context.author.send(embed=embed)
         except discord.Forbidden:
             await context.send(embed=embed)
 
