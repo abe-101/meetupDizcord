@@ -13,6 +13,7 @@ import os
 import platform
 import random
 import sys
+from logging.handlers import RotatingFileHandler
 
 import aiosqlite
 import discord
@@ -117,7 +118,7 @@ logger.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
 ## File handler
-file_handler = logging.RotatingFileHandler(
+file_handler = RotatingFileHandler(
     filename="discord.log",
     encoding="utf-8",
     mode="a",
