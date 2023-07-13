@@ -144,4 +144,5 @@ cython_debug/
 *.db
 
 # Log file
-discord.log
+discord.log*
+config.json
