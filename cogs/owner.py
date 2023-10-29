@@ -328,6 +328,19 @@ class Owner(commands.Cog, name="owner"):
         )
         await context.send(embed=embed)
 
+    @commands.command(hidden=True, aliases=['guilds'])
+    @commands.is_owner()
+    async def servers(self, ctx):
+        msg = '```js\n'
+        msg += '{!s:19s} | {!s:>5s} | {} | {}\n'.format(
+            'ID', 'Member', 'Name', 'Owner')
+        for guild in self.bot.guilds:
+            msg += '{!s:19s} | {!s:>5s}| {} | {}\n'.format(
+                guild.id, guild.member_count, guild.name, guild.owner)
+        msg += '```'
+        await ctx.send(msg)
+
+
 
 async def setup(bot):
     await bot.add_cog(Owner(bot))
